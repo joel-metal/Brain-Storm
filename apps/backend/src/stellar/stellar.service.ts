@@ -2,6 +2,8 @@ import { Injectable, Logger, Inject } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Cache } from 'cache-manager';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import {
   Horizon,
   Keypair,
@@ -29,6 +31,7 @@ export class StellarService {
     private configService: ConfigService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) {
+  constructor(private configService: ConfigService) {
     const isTestnet = process.env.STELLAR_NETWORK !== 'mainnet';
     this.network = isTestnet ? 'testnet' : 'mainnet';
     this.networkPassphrase = isTestnet ? Networks.TESTNET : Networks.PUBLIC;
@@ -53,6 +56,24 @@ export class StellarService {
     const balances = account.balances;
     await this.cacheManager.set(cacheKey, balances, 30);
     return balances;
+  }
+
+  private async retryWithBackoff<T>(
+    fn: () => Promise<T>,
+    attempt: number = 1,
+  ): Promise<T> {
+    try {
+      return await fn();
+    } catch (error) {
+      if (attempt >= MAX_RETRIES) {
+        this.logger.error(`Max retries reached: ${error.message}`);
+        throw error;
+      }
+      const delay = BASE_DELAY_MS * Math.pow(2, attempt - 1);
+      this.logger.warn(`Attempt ${attempt} failed, retrying in ${delay}ms: ${error.message}`);
+      await new Promise(resolve => setTimeout(resolve, delay));
+      return this.retryWithBackoff(fn, attempt + 1);
+    }
   }
 
   private async retryWithBackoff<T>(

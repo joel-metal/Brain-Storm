@@ -55,4 +55,16 @@ export class CoursesService {
   private async invalidateCache() {
     await this.cacheManager.del(this.CACHE_KEY);
   }
+
+  async update(id: string, data: Partial<Course>) {
+    const course = await this.findOne(id);
+    if (!course) throw new NotFoundException('Course not found');
+    return this.repo.save({ ...course, ...data });
+  }
+
+  async delete(id: string) {
+    const course = await this.findOne(id);
+    if (!course) throw new NotFoundException('Course not found');
+    return this.repo.remove(course);
+  }
 }
