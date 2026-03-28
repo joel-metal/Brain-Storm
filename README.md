@@ -216,16 +216,20 @@ See `.env.example` for the full list. Key variables:
 
 ## API Endpoints
 
+All API endpoints are prefixed with `/v1` for versioning.
+
 | Method | Path | Description |
 |---|---|---|
-| POST | `/auth/register` | Register a new user |
-| POST | `/auth/login` | Login and receive JWT |
-| GET | `/courses` | List all published courses |
-| GET | `/courses/:id` | Get a single course |
-| GET | `/users/:id` | Get user profile |
-| GET | `/stellar/balance/:publicKey` | Get Stellar account balances |
+| POST | `/v1/auth/register` | Register a new user |
+| POST | `/v1/auth/login` | Login and receive JWT |
+| GET | `/v1/courses` | List all published courses |
+| GET | `/v1/courses/:id` | Get a single course |
+| GET | `/v1/users/:id` | Get user profile |
+| GET | `/v1/stellar/balance/:publicKey` | Get Stellar account balances |
 
-Full interactive docs: `http://localhost:3000/api/docs`
+**Interactive API Documentation:**
+- Local: `http://localhost:3000/api/docs`
+- Production: [https://nonso-eze.github.io/Brain-Storm/](https://nonso-eze.github.io/Brain-Storm/) (to be deployed)
 
 ---
 
