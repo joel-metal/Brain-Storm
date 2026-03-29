@@ -28,6 +28,9 @@ export class Course {
   @Column({ default: false })
   isDeleted: boolean;
 
+  @Column({ default: false })
+  requiresKyc: boolean;
+
   @Column({ nullable: true })
   instructorId: string;
 

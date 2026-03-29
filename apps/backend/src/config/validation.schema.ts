@@ -50,4 +50,7 @@ export const validationSchema = Joi.object({
   // Throttle
   THROTTLE_TTL: Joi.number().default(60000),
   THROTTLE_LIMIT: Joi.number().default(100),
+
+  // KYC
+  KYC_PROVIDER_API_KEY: Joi.string().allow('').default(''),
 });
