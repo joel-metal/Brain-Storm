@@ -41,14 +41,17 @@ export class CredentialsController {
 
   @Get(':userId')
   @ApiOperation({ summary: 'List all credentials for a user' })
-  @ApiResponse({ status: 200, description: 'List of credentials' })
+  @ApiResponse({ status: 200, description: 'List of credentials', schema: { example: [{ id: 'uuid', courseId: 'uuid', txHash: 'abc123', issuedAt: '2024-01-01T00:00:00.000Z' }] } })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   findByUser(@Param('userId') userId: string) {
     return this.credentialsService.findByUser(userId);
   }
 
   @Get('verify/:txHash')
-  @ApiOperation({ summary: 'Verify a credential on-chain by txHash' })
-  @ApiResponse({ status: 200, description: 'Verification result' })
+  @ApiOperation({ summary: 'Verify a credential on-chain by transaction hash' })
+  @ApiResponse({ status: 200, description: 'Verification result', schema: { example: { valid: true, txHash: 'abc123' } } })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 404, description: 'Transaction not found' })
   verify(@Param('txHash') txHash: string) {
     return this.credentialsService.verify(txHash);
   }
@@ -56,10 +59,11 @@ export class CredentialsController {
   @Post('issue')
   @UseGuards(AuthGuard(['jwt', 'api-key']), RolesGuard)
   @Roles('admin')
-  @ApiSecurity('X-API-KEY')
-  @ApiOperation({ summary: 'Issue a credential — accepts JWT (admin) or service API key' })
-  @ApiResponse({ status: 201, description: 'Credential issued' })
-  @ApiResponse({ status: 401, description: 'Unauthorized — provide a valid JWT or X-API-KEY header' })
+  @ApiOperation({ summary: 'Admin: manually issue a credential' })
+  @ApiBody({ schema: { example: { userId: 'uuid', courseId: 'uuid', stellarPublicKey: 'GABC...' } } })
+  @ApiResponse({ status: 201, description: 'Credential issued', schema: { example: { id: 'uuid', txHash: 'abc123' } } })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden - admin role required' })
   issue(@Body() body: { userId: string; courseId: string; stellarPublicKey: string }) {
     return this.credentialsService.issue(body.userId, body.courseId, body.stellarPublicKey);
   }

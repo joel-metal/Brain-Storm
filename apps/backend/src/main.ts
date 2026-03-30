@@ -8,6 +8,8 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import { SanitizationPipe } from './common/pipes/sanitization.pipe';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
+import { writeFileSync, mkdirSync } from 'fs';
+import { join } from 'path';
 import { MetricsInterceptor } from './metrics/metrics.interceptor';
 import { MetricsService } from './metrics/metrics.service';
 
@@ -19,7 +21,6 @@ async function bootstrap() {
   const port = configService.get<number>('port');
   const nodeEnv = configService.get<string>('nodeEnv');
 
-  // Use Winston logger as the default logger
   app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
 
   app.setGlobalPrefix('v1');
