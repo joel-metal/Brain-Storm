@@ -24,6 +24,14 @@ type AuthAction =
   | { type: 'SET_USER'; payload: AuthUser };
 
 const authReducer = (state: AuthState, action: AuthAction): AuthState => {
+const decodeJWT = (token: string) => {
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload;
+  } catch {
+    return null;
+  }
+};
   switch (action.type) {
     case 'SET_LOADING':
       return { ...state, isLoading: action.payload };

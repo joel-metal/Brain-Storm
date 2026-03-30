@@ -48,6 +48,19 @@ export const handlers = [
       createdAt: '2024-01-01T00:00:00.000Z',
       stellarPublicKey: 'GABC...',
     }),
+    })
+  ),
+
+  http.get(`${BASE}/credentials/:userId`, () =>
+    HttpResponse.json([
+      {
+        id: 'cred-1',
+        courseId: 'course-1',
+        courseName: 'Intro to Stellar Blockchain',
+        issuedAt: '2024-06-01T00:00:00.000Z',
+        txHash: 'abc123txhash',
+      },
+    ])
   ),
 
   http.get(`${BASE}/users/user-1/token-balance`, () =>
