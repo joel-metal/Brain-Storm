@@ -15,6 +15,7 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { LoggerModule } from './common/logger';
 import { HealthModule } from './health/health.module';
 import { MetricsModule } from './metrics/metrics.module';
+import { KycModule } from './kyc/kyc.module';
 import { LeaderboardModule } from './leaderboard/leaderboard.module';
 import { ForumsModule } from './forums/forums.module';
 import * as redisStore from 'cache-manager-redis-store';
@@ -81,6 +82,7 @@ import { validationSchema } from './config/validation.schema';
     NotificationsModule,
     HealthModule,
     MetricsModule,
+    KycModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })

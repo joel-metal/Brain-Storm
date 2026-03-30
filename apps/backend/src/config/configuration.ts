@@ -54,4 +54,8 @@ export default () => ({
     ttl: parseInt(process.env.THROTTLE_TTL || '60000', 10),
     limit: parseInt(process.env.THROTTLE_LIMIT || '100', 10),
   },
+
+  kyc: {
+    providerApiKey: process.env.KYC_PROVIDER_API_KEY || '',
+  },
 });
