@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Credential } from './credential.entity';
@@ -8,7 +8,7 @@ import { StellarService } from '../stellar/stellar.service';
 export class CredentialsService {
   constructor(
     @InjectRepository(Credential) private repo: Repository<Credential>,
-    private stellarService: StellarService,
+    @Inject(forwardRef(() => StellarService)) private stellarService: StellarService,
   ) {}
 
   async issue(userId: string, courseId: string, stellarPublicKey: string): Promise<Credential> {
