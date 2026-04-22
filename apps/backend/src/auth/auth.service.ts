@@ -34,12 +34,19 @@ export class AuthService {
     private encryptionService: EncryptionService,
   ) { }
 
-  async register(email: string, password: string) {
+  async register(email: string, password: string, refCode?: string) {
     const existing = await this.usersService.findByEmail(email);
     if (existing) throw new BadRequestException('Email already in use');
 
     const passwordHash = await bcrypt.hash(password, 10);
     const { token, hash, expiresAt } = this.generateOpaqueToken(24);
+    const referralCode = crypto.randomBytes(6).toString('hex');
+
+    let referredBy: string | null = null;
+    if (refCode) {
+      const referrer = await this.usersService.findByReferralCode(refCode);
+      if (referrer) referredBy = referrer.id;
+    }
 
     const user = await this.usersService.create({
       email,
@@ -47,6 +54,8 @@ export class AuthService {
       isVerified: false,
       verificationToken: hash,
       verificationTokenExpiresAt: expiresAt,
+      referralCode,
+      referredBy,
     });
 
     await this.mailService.sendVerificationEmail(user.email, token);

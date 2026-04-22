@@ -60,6 +60,13 @@ export class UsersController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get(':id/referrals')
+  @ApiOperation({ summary: 'Get referral count and earned BST for a user' })
+  getReferrals(@Param('id') id: string) {
+    return this.usersService.getReferralStats(id);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async update(
     @Param('id') id: string,

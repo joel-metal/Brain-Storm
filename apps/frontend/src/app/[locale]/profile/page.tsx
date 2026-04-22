@@ -6,6 +6,7 @@ import { useTranslations, useLocale } from 'next-intl';
 import api from '@/lib/api';
 import { Button } from '@/components/ui/Button';
 import WalletSection from './WalletSection';
+import ReferralSection from './ReferralSection';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 
 interface User {
@@ -17,6 +18,7 @@ interface User {
   avatarUrl: string;
   createdAt: string;
   stellarPublicKey?: string;
+  referralCode?: string;
 }
 
 interface FormData {
@@ -289,6 +291,11 @@ export default function ProfilePage() {
         onLinked={onWalletLinked}
         onUnlinked={onWalletUnlinked}
       />
+
+      {/* Referral Section */}
+      {user.referralCode && (
+        <ReferralSection userId={user.id} referralCode={user.referralCode} />
+      )}
     </main>
     </ProtectedRoute>
   );

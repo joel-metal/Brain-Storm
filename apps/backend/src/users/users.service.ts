@@ -92,4 +92,13 @@ export class UsersService {
     if (!user) throw new NotFoundException('User not found');
     return this.repo.save({ ...user, deletedAt: new Date() });
   }
+
+  findByReferralCode(code: string) {
+    return this.repo.findOne({ where: { referralCode: code } });
+  }
+
+  async getReferralStats(userId: string) {
+    const count = await this.repo.count({ where: { referredBy: userId } });
+    return { referralCount: count, earnedBst: count * 50 };
+  }
 }

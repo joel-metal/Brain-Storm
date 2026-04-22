@@ -4,12 +4,14 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
+import { useNotifications } from '@/hooks/useNotifications';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 
 export function Navbar() {
   const pathname = usePathname();
   const { user, isAuthenticated, logout } = useAuth();
+  const { unreadCount, clearUnread } = useNotifications();
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -58,7 +60,25 @@ export function Navbar() {
           <LanguageSwitcher />
           <ThemeToggle />
           {isAuthenticated && user ? (
-            <div className="relative">
+            <div className="flex items-center gap-2">
+              {/* Notification bell */}
+              <Link
+                href="/notifications"
+                aria-label={`Notifications${unreadCount > 0 ? `, ${unreadCount} unread` : ''}`}
+                onClick={clearUnread}
+                className="relative p-1 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+                {unreadCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 min-w-[1.1rem] h-[1.1rem] flex items-center justify-center rounded-full bg-red-500 text-white text-[10px] font-bold px-0.5">
+                    {unreadCount > 99 ? '99+' : unreadCount}
+                  </span>
+                )}
+              </Link>
+
+              <div className="relative">
               <button
                 onClick={() => setDropdownOpen((o) => !o)}
                 aria-haspopup="true"
@@ -112,6 +132,7 @@ export function Navbar() {
                   </button>
                 </div>
               )}
+            </div>
             </div>
           ) : (
             <Link

@@ -69,8 +69,8 @@ export class AuthController {
   @ApiResponse({ status: 201, description: 'User registered successfully', schema: { example: { access_token: 'jwt', refresh_token: 'token' } } })
   @ApiResponse({ status: 400, description: 'Invalid input' })
   @ApiResponse({ status: 409, description: 'User already exists' })
-  register(@Body() dto: AuthDto) {
-    return this.authService.register(dto.email, dto.password);
+  register(@Body() dto: AuthDto, @Query('ref') ref?: string) {
+    return this.authService.register(dto.email, dto.password, ref);
   }
 
   @Post('login')

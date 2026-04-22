@@ -1,17 +1,22 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Inject, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Notification, NotificationType } from './notification.entity';
+import { NotificationsGateway } from './notifications.gateway';
 
 @Injectable()
 export class NotificationsService {
   constructor(
     @InjectRepository(Notification) private repo: Repository<Notification>,
+    @Inject(forwardRef(() => NotificationsGateway))
+    private gateway: NotificationsGateway,
   ) {}
 
   async create(userId: string, type: NotificationType, message: string) {
     const notification = this.repo.create({ userId, type, message });
-    return this.repo.save(notification);
+    const saved = await this.repo.save(notification);
+    this.gateway.emitToUser(userId, 'notification', saved);
+    return saved;
   }
 
   async findByUser(userId: string) {
