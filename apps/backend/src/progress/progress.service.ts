@@ -13,7 +13,7 @@ export class ProgressService {
     @InjectRepository(Progress) private repo: Repository<Progress>,
     private stellarService: StellarService,
     private credentialsService: CredentialsService,
-    private usersService: UsersService,
+    private usersService: UsersService
   ) {}
 
   async record(userId: string, dto: RecordProgressDto, stellarPublicKey: string) {
@@ -37,7 +37,7 @@ export class ProgressService {
       const txHash = await this.stellarService.recordProgress(
         stellarPublicKey,
         dto.courseId,
-        dto.progressPct,
+        dto.progressPct
       );
       progress.txHash = txHash;
     } catch (err) {
@@ -51,7 +51,9 @@ export class ProgressService {
       await this.credentialsService.issue(userId, dto.courseId, stellarPublicKey);
 
       // Mint 50 BST to referrer on first course completion
-      const completedCount = await this.repo.count({ where: { userId, completedAt: Not(IsNull()) } });
+      const completedCount = await this.repo.count({
+        where: { userId, completedAt: Not(IsNull()) },
+      });
       if (completedCount === 1) {
         const user = await this.usersService.findById(userId);
         if (user?.referredBy) {

@@ -13,7 +13,10 @@ export default function ReferralSection({ userId, referralCode }: Props) {
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    api.get(`/users/${userId}/referrals`).then((r) => setStats(r.data)).catch(() => {});
+    api
+      .get(`/users/${userId}/referrals`)
+      .then((r) => setStats(r.data))
+      .catch(() => {});
   }, [userId]);
 
   const referralLink =

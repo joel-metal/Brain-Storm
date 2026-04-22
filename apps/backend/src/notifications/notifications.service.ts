@@ -9,7 +9,7 @@ export class NotificationsService {
   constructor(
     @InjectRepository(Notification) private repo: Repository<Notification>,
     @Inject(forwardRef(() => NotificationsGateway))
-    private gateway: NotificationsGateway,
+    private gateway: NotificationsGateway
   ) {}
 
   async create(userId: string, type: NotificationType, message: string) {
@@ -34,10 +34,7 @@ export class NotificationsService {
   }
 
   async markAllAsRead(userId: string) {
-    await this.repo.update(
-      { userId, isRead: false },
-      { isRead: true },
-    );
+    await this.repo.update({ userId, isRead: false }, { isRead: true });
     return { success: true };
   }
 
@@ -46,7 +43,7 @@ export class NotificationsService {
     return this.create(
       userId,
       NotificationType.ENROLLMENT,
-      `You have been enrolled in ${courseName}`,
+      `You have been enrolled in ${courseName}`
     );
   }
 
@@ -54,7 +51,7 @@ export class NotificationsService {
     return this.create(
       userId,
       NotificationType.CREDENTIAL_ISSUED,
-      `Your credential for ${courseName} has been issued!`,
+      `Your credential for ${courseName} has been issued!`
     );
   }
 
@@ -62,7 +59,7 @@ export class NotificationsService {
     return this.create(
       userId,
       NotificationType.COMPLETION,
-      `Congratulations! You have completed ${courseName}`,
+      `Congratulations! You have completed ${courseName}`
     );
   }
 }
