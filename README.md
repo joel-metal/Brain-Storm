@@ -31,6 +31,10 @@ brain-storm/
 │   └── shared/            # RBAC & shared utilities (Rust/Soroban)
 ├── scripts/               # Build and deploy scripts
 ├── docs/                  # Extended documentation
+│   ├── api-rate-limiting.md
+│   ├── community-moderation.md
+│   ├── catastrophic-recovery.md
+│   └── kyc-verification.md
 ├── .github/workflows/     # CI/CD pipelines
 ├── Cargo.toml             # Rust workspace
 ├── package.json           # Node.js workspace root
