@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useAuth } from '@/lib/auth-context';
 import api from '@/lib/api';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
+import { CircularProgress } from '@/components/ui/CircularProgress';
 
 interface UserData {
   id: string;
@@ -196,21 +197,20 @@ export default function DashboardPage() {
               enrolledCourses.map((course) => (
                 <div
                   key={course.id}
-                  className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4"
+                  className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 flex items-center gap-4"
                 >
-                  <div className="flex justify-between items-center">
-                    <h3 className="font-semibold text-gray-800 dark:text-gray-100">
-                      {course.title}
-                    </h3>
-                    <span className="text-sm text-gray-500 dark:text-gray-400">
-                      {course.progressPct}%
-                    </span>
-                  </div>
-                  <div className="mt-2 h-3 w-full rounded-full bg-gray-200 dark:bg-gray-700">
-                    <div
-                      className="h-full rounded-full bg-blue-500"
-                      style={{ width: `${course.progressPct}%` }}
-                    />
+                  <CircularProgress value={course.progressPct} size={72} strokeWidth={7} />
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-semibold text-gray-800 dark:text-gray-100">{course.title}</h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+                      {course.progressPct === 100 ? '🏆 Completed' : `${course.progressPct}% complete`}
+                    </p>
+                    <div className="mt-2 h-2 w-full rounded-full bg-gray-200 dark:bg-gray-700">
+                      <div
+                        className="h-full rounded-full bg-blue-500 transition-all duration-300"
+                        style={{ width: `${course.progressPct}%` }}
+                      />
+                    </div>
                   </div>
                 </div>
               ))

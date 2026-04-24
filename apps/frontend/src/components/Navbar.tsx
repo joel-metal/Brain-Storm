@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { usePathname } from 'next/navigation';
 import { ThemeToggle } from './ThemeToggle';
 import { LanguageSwitcher } from './LanguageSwitcher';
+import { NotificationBell } from './NotificationBell';
 
 export function Navbar() {
   const t = useTranslations('nav');
@@ -43,6 +44,7 @@ export function Navbar() {
           >
             {t('profile')}
           </Link>
+          <NotificationBell />
           <LanguageSwitcher />
           <ThemeToggle />
         </div>
