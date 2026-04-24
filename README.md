@@ -10,6 +10,12 @@ Brain-Storm is a full-stack, monorepo education platform that leverages the Stel
 
 The platform combines a modern web frontend, a scalable REST API backend, and a suite of Soroban smart contracts — all living in a single monorepo for streamlined development and deployment.
 
+## Architecture
+
+![Brain-Storm System Architecture](./docs/architecture.svg)
+
+> Full diagram with data-flow annotations: [`docs/architecture.md`](./docs/architecture.md)
+
 ---
 
 ## Monorepo Structure
@@ -25,6 +31,10 @@ brain-storm/
 │   └── shared/            # RBAC & shared utilities (Rust/Soroban)
 ├── scripts/               # Build and deploy scripts
 ├── docs/                  # Extended documentation
+│   ├── api-rate-limiting.md
+│   ├── community-moderation.md
+│   ├── catastrophic-recovery.md
+│   └── kyc-verification.md
 ├── .github/workflows/     # CI/CD pipelines
 ├── Cargo.toml             # Rust workspace
 ├── package.json           # Node.js workspace root
@@ -147,6 +157,42 @@ rustup target add wasm32-unknown-unknown
 ./scripts/build.sh
 ```
 
+## Docker Setup
+
+Containerized development and production environment for backend + PostgreSQL + Redis.
+
+### Quick Start with Docker
+
+```bash
+# 1. Copy environment template
+cp .env.example .env
+
+# 2. Edit .env (JWT_SECRET, STELLAR_SECRET_KEY, etc.)
+#    Note: DATABASE_HOST=postgres, DATABASE_USERNAME=brain-storm, etc. are auto-set
+
+# 3. Start services (production mode)
+docker compose up -d --build backend postgres redis
+
+# Production API: http://localhost:3000/api
+# Swagger docs: http://localhost:3000/api/docs
+
+# Development (with hot reload):
+# docker compose up -d --build  # Uses docker-compose.override.yml automatically
+
+# Logs:
+docker compose logs -f backend
+
+# Stop & clean volumes:
+docker compose down -v
+```
+
+**Key Notes:**
+- **Default DB**: `brain-storm` db/user/pass (override in `.env`)
+- **Dev Mode**: Auto hot-reload via src/ mount + `nest start --watch`
+- **Persistence**: `postgres_data` / `redis_data` volumes
+- **Healthchecks**: Backend waits for DB ready
+- Frontend/contracts run separately (npm/yarn)
+
 ---
 
 ## Smart Contract Deployment
@@ -180,26 +226,32 @@ See `.env.example` for the full list. Key variables:
 
 ## API Endpoints
 
+All API endpoints are prefixed with `/v1` for versioning.
+
 | Method | Path | Description |
 |---|---|---|
-| POST | `/auth/register` | Register a new user |
-| POST | `/auth/login` | Login and receive JWT |
-| GET | `/courses` | List all published courses |
-| GET | `/courses/:id` | Get a single course |
-| GET | `/users/:id` | Get user profile |
-| GET | `/stellar/balance/:publicKey` | Get Stellar account balances |
+| POST | `/v1/auth/register` | Register a new user |
+| POST | `/v1/auth/login` | Login and receive JWT |
+| GET | `/v1/courses` | List all published courses |
+| GET | `/v1/courses/:id` | Get a single course |
+| GET | `/v1/users/:id` | Get user profile |
+| GET | `/v1/stellar/balance/:publicKey` | Get Stellar account balances |
 
-Full interactive docs: `http://localhost:3000/api/docs`
+**Interactive API Documentation:**
+- Local: `http://localhost:3000/api/docs`
+- Production: [https://nonso-eze.github.io/Brain-Storm/](https://nonso-eze.github.io/Brain-Storm/)
 
 ---
 
 ## CI/CD
 
-GitHub Actions workflows in `.github/workflows/ci.yml` run on every push and PR:
+GitHub Actions workflows in `.github/workflows/` run on every push and PR:
 
-- **Backend**: install → build → test
-- **Frontend**: install → build
+- **Backend**: install → build → test → lint
+- **Frontend**: install → build → lint
 - **Contracts**: `cargo test` → `cargo fmt --check` → `cargo clippy`
+- **API Docs**: auto-deploy Swagger UI to GitHub Pages on push to `main`
+- **Release**: semantic versioning via release-please, auto-generated `CHANGELOG.md`
 
 ---
 
