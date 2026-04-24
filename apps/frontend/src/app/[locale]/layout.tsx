@@ -32,24 +32,19 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      <body className="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors flex flex-col min-h-screen">
+      <body className="bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100 transition-colors duration-200 flex flex-col min-h-screen">
         <NextIntlClientProvider messages={messages}>
-          <ClientProviders>
-            {/* Skip-to-content — first focusable element on every page */}
-            <a href="#main-content" className="skip-link">
-              Skip to main content
-            </a>
-            {children}
-          </ClientProviders>
           <ThemeProvider>
-            <a href="#main-content" className="skip-link">
-              Skip to main content
-            </a>
-            <Navbar />
-            <div id="main-content" tabIndex={-1} className="flex-1">
-              {children}
-            </div>
-            <Footer />
+            <ClientProviders>
+              <a href="#main-content" className="skip-link">
+                Skip to main content
+              </a>
+              <Navbar />
+              <div id="main-content" tabIndex={-1} className="flex-1">
+                {children}
+              </div>
+              <Footer />
+            </ClientProviders>
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>

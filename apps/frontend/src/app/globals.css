@@ -24,3 +24,12 @@
   outline: 2px solid #2563eb;
   outline-offset: 2px;
 }
+
+/* Smooth theme transitions */
+*,
+*::before,
+*::after {
+  transition-property: background-color, border-color, color;
+  transition-duration: 200ms;
+  transition-timing-function: ease;
+}
